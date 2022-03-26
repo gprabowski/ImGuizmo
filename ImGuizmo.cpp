@@ -1119,7 +1119,7 @@ static void ComputeContext(const float *view, const float *projection,
   rightViewInverse.TransformVector(gContext.mModelInverse);
   float rightLength =
       GetSegmentLengthClipSpace(makeVect(0.f, 0.f), rightViewInverse);
-  gContext.mScreenFactor = gContext.mGizmoSizeClipSpace / rightLength;
+  gContext.mScreenFactor = gContext.mGizmoSizeClipSpace / (rightLength * 3);
 
   ImVec2 centerSSpace = worldToPos(makeVect(0.f, 0.f), gContext.mMVP);
   gContext.mScreenSquareCenter = centerSSpace;
@@ -2867,7 +2867,8 @@ void ViewManipulate(float *view, float length, ImVec2 position, ImVec2 size,
   svgProjection = gContext.mProjectionMat;
 
   ImGuiIO &io = ImGui::GetIO();
-  gContext.mDrawList->AddRectFilled(position, position + size, backgroundColor);
+  gContext.mDrawList->AddRectFilled(
+      position, position + ImVec2{3 * size[0], 3 * size[1]}, backgroundColor);
   matrix_t viewInverse;
   viewInverse.Inverse(*(matrix_t *)view);
 
